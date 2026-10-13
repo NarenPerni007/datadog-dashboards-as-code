@@ -10,31 +10,29 @@ locals {
 # One dashboard per service. Three widgets answer the three questions an
 # on-call engineer asks first: how slow, how broken, how saturated.
 resource "datadog_dashboard" "service" {
-  title        = "[${var.env}] ${var.service} overview"
-  description  = "Latency, errors, and saturation for ${var.service} in ${var.env}."
-  layout_type  = "ordered"
-  notify_list  = []
-  template_variables = [
-    {
-      name    = "service"
-      prefix  = "service"
-      default = var.service
-    }
-  ]
+  title       = "[${var.env}] ${var.service} overview"
+  description = "Latency, errors, and saturation for ${var.service} in ${var.env}."
+  layout_type = "ordered"
+  notify_list = []
+  template_variable {
+    name    = "service"
+    prefix  = "service"
+    default = var.service
+  }
 
   widget {
     timeseries_definition {
       title = "Latency p50 / p95 / p99"
       request {
-        q = "avg:trace.requests.latency.p50{${local.service_filter}}"
+        q            = "avg:trace.requests.latency.p50{${local.service_filter}}"
         display_type = "line"
       }
       request {
-        q = "avg:trace.requests.latency.p95{${local.service_filter}}"
+        q            = "avg:trace.requests.latency.p95{${local.service_filter}}"
         display_type = "line"
       }
       request {
-        q = "avg:trace.requests.latency.p99{${local.service_filter}}"
+        q            = "avg:trace.requests.latency.p99{${local.service_filter}}"
         display_type = "line"
       }
       yaxis {
@@ -47,7 +45,7 @@ resource "datadog_dashboard" "service" {
     timeseries_definition {
       title = "Error rate"
       request {
-        q = "avg:trace.requests.errors{${local.service_filter}}.as_rate()"
+        q            = "avg:trace.requests.errors{${local.service_filter}}.as_rate()"
         display_type = "line"
       }
       yaxis {

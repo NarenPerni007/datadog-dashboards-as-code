@@ -12,10 +12,6 @@ resource "datadog_workflow_automation" "alert_triage" {
   tags        = ["service:${var.service}", "env:${var.env}", "team:${var.team}"]
   published   = true
 
-  run_as = {
-    type = "owner"
-  }
-
   spec_json = jsonencode({
     triggers = [
       {
